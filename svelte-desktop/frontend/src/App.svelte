@@ -1,100 +1,23 @@
 <script>
-  import logo from "./assets/images/logo-universal.png";
-  import { Greet, Sum } from "../wailsjs/go/main/App.js";
-
-  let resultText = "Please enter your name below 👇";
-  let name;
-
-  function greet() {
-    Greet(name).then((result) => (resultText = result));
-  }
-
-  let num1 = 10;
-  let num2 = 20;
-  let sumResult = 0;
-
-  function calculateSum() {
-    Sum(num1, num2).then((result) => (sumResult = result));
-  }
+  import Nav from "./lib/Nav.svelte";
+  import Board from "./lib/Board.svelte";
 </script>
 
-<main>
-  <img alt="Wails logo" id="logo" src={logo} />
-  
-  <div class="result" id="result">{resultText}</div>
-  <div class="input-box" id="input">
-    <input
-      autocomplete="off"
-      bind:value={name}
-      class="input"
-      id="name"
-      type="text"
-    />
-    <button class="btn" on:click={greet}>Greet</button>
-  </div>
-
-  <div class="result">Kết quả cộng: {sumResult}</div>
-  <div class="input-box">
-    <input class="input" type="number" bind:value={num1} style="width: 80px;" />
-    <span style="margin: 0 10px;">+</span>
-    <input class="input" type="number" bind:value={num2} style="width: 80px;" />
-    <button class="btn" on:click={calculateSum}>Tính</button>
-  </div>
+<main class="app-wrapper">
+  <Nav />
+  <Board />
 </main>
 
 <style>
-  #logo {
-    display: block;
-    width: 50%;
-    height: 50%;
-    margin: auto;
-    padding: 10% 0 0;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-origin: content-box;
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling on body, the board will scroll horizontally */
   }
 
-  .result {
-    height: 20px;
-    line-height: 20px;
-    margin: 1.5rem auto;
-  }
-
-  .input-box .btn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 3px;
-    border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
-    cursor: pointer;
-  }
-
-  .input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
-  }
-
-  .input-box .input {
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 10px;
-    background-color: rgba(240, 240, 240, 1);
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .input-box .input:hover {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  .input-box .input:focus {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+  .app-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 </style>
