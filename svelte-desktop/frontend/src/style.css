@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "../node_modules/@skeletonlabs/skeleton/src/themes/modern.css";
+@import "../node_modules/@skeletonlabs/skeleton/src/index.css";
 
 html, body {
   margin: 0;
