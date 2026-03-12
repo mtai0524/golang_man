@@ -1,0 +1,43 @@
+# 1. Frontend build stage
+FROM node:20-bookworm AS frontend-build
+
+WORKDIR /app/frontend
+
+# Separate copy so cache is only busted when deps change
+COPY frontend/package.json ./
+# Copy lockfile only if it exists — use ci install for reproducibility
+COPY frontend/package-lock.json* ./
+
+# --legacy-peer-deps handles peer dep conflicts
+# --prefer-offline avoids flaky network issues in CI
+RUN npm install --legacy-peer-deps
+
+COPY frontend/ .
+RUN npm run build
+
+# 2. Go build stage
+FROM golang:1.23-bookworm AS backend-build
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+COPY --from=frontend-build /app/frontend/dist ./frontend/dist
+
+RUN go build -o server server.go app.go
+
+# 3. Final runtime stage
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=backend-build /app/server .
+
+EXPOSE 8080
+CMD ["./server"]

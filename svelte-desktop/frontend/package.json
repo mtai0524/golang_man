@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
+    "@lucide/svelte": "latest",
     "@skeletonlabs/skeleton-svelte": "^4.12.1",
     "@zag-js/svelte": "^1.35.3",
     "svelte-dnd-action": "^0.9.69"

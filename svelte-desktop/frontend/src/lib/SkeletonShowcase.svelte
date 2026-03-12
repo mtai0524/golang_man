@@ -1,10 +1,28 @@
 <script lang="ts">
-  import { Accordion } from "@skeletonlabs/skeleton-svelte";
-  import { ChevronDownIcon } from "@lucide/svelte";
+  import {
+    Accordion,
+    Avatar,
+    Progress,
+    RatingGroup,
+    SegmentedControl,
+    Slider,
+    Switch,
+  } from "@skeletonlabs/skeleton-svelte";
+  import {
+    ChevronDownIcon,
+    MailIcon,
+    MoonIcon,
+    SettingsIcon,
+    StarIcon,
+    UserIcon,
+  } from "@lucide/svelte";
   import { slide } from "svelte/transition";
 
   let tabSet = $state(0);
   let toggleValue = $state(true);
+  let sliderValue = $state([50]);
+  let ratingValue = $state(3);
+  let segmentedValue = $state("email");
 
   const faqItems = [
     {
@@ -28,15 +46,47 @@
   ];
 </script>
 
-<div class="container mx-auto p-8 space-y-8">
+<div class="container mx-auto p-8 space-y-8 pb-20">
   <header class="text-center">
-    <h1 class="h1">Skeleton UI Showcase</h1>
+    <h1 class="h1 font-bold">Skeleton UI Showcase</h1>
     <p class="opacity-50">Cùng xem các component xịn xò của Skeleton nào!</p>
   </header>
 
+  <!-- Avatars -->
+  <section class="card p-4 space-y-4 shadow-xl">
+    <h3 class="h3 font-bold">Avatars</h3>
+    <div class="flex flex-wrap gap-8 items-center justify-center">
+      <Avatar>
+        <Avatar.Image
+          src="https://i.pravatar.cc/128?u=1"
+          alt="User"
+        />
+        <Avatar.Fallback>JD</Avatar.Fallback>
+      </Avatar>
+
+      <Avatar>
+        <Avatar.Fallback class="preset-filled-secondary-500">
+          <UserIcon class="size-6" />
+        </Avatar.Fallback>
+      </Avatar>
+
+      <div class="flex -space-x-3">
+        {#each [1, 2, 3] as i}
+          <Avatar class="border-2 border-surface-100-900">
+            <Avatar.Image
+              src="https://i.pravatar.cc/128?u={i}"
+              alt="User {i}"
+            />
+            <Avatar.Fallback>U{i}</Avatar.Fallback>
+          </Avatar>
+        {/each}
+      </div>
+    </div>
+  </section>
+
   <!-- Buttons & Badges -->
   <section class="card p-4 space-y-4 shadow-xl">
-    <h3 class="h3">Buttons & Badges</h3>
+    <h3 class="h3 font-bold">Buttons & Badges</h3>
     <div class="flex flex-wrap gap-4 items-center">
       <button class="btn preset-filled-primary-500">Primary Button</button>
       <button class="btn preset-filled-secondary-500">Secondary Button</button>
@@ -48,53 +98,144 @@
     </div>
   </section>
 
-  <!-- Progress + Toggle -->
+  <!-- Progress & Switch -->
   <section class="card p-4 space-y-6 shadow-xl">
-    <h3 class="h3">Progress Bars</h3>
+    <h3 class="h3 font-bold">Progress & Selection</h3>
 
-    <div>
-      <p class="mb-2">Progress Bar (64%):</p>
-      <div class="progress h-2 rounded-full bg-surface-200-800">
-        <div
-          class="h-full rounded-full bg-primary-500"
-          style="width: 64%"
-        ></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="space-y-4">
+        <p class="font-bold">Official Progress:</p>
+        <Progress
+          value={64}
+          max={100}
+        >
+          <Progress.Label class="mb-2 block">64% Complete</Progress.Label>
+          <Progress.Track class="h-2 rounded-full bg-surface-200-800 overflow-hidden">
+            <Progress.Range class="bg-primary-500 h-full" />
+          </Progress.Track>
+        </Progress>
+
+        <Progress
+          value={null}
+          max={100}
+        >
+          <Progress.Label class="mb-2 block">Loading...</Progress.Label>
+          <Progress.Track class="h-2 rounded-full bg-surface-200-800 overflow-hidden">
+            <Progress.Range class="bg-tertiary-500 h-full animate-[progress_1.5s_ease-in-out_infinite] w-1/3" />
+          </Progress.Track>
+        </Progress>
       </div>
-    </div>
 
-    <div>
-      <p class="mb-2">Indeterminate Progress:</p>
-      <div
-        class="progress-indeterminate h-2 rounded-full bg-surface-200-800 overflow-hidden"
-      >
-        <div
-          class="h-full w-1/3 rounded-full bg-tertiary-500 animate-[progress_1.5s_ease-in-out_infinite]"
-        ></div>
+      <div class="space-y-4">
+        <p class="font-bold">Official Switch (Toggle):</p>
+        <div class="flex flex-col gap-4">
+          <Switch
+            checked={toggleValue}
+            onCheckedChange={(e) => (toggleValue = e.checked)}
+            class="flex items-center justify-between"
+          >
+            <Switch.Label>Notifications</Switch.Label>
+            <Switch.Control class="w-12 h-6 rounded-full transition-colors duration-200 {toggleValue ? 'bg-success-500' : 'bg-surface-400'} relative">
+              <Switch.Thumb class="absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 {toggleValue ? 'translate-x-[22px]' : ''}" />
+            </Switch.Control>
+          </Switch>
+
+          <Switch class="flex items-center justify-between">
+            <Switch.Label class="flex items-center gap-2">
+              <MoonIcon class="size-4" /> Dark Mode
+            </Switch.Label>
+            <Switch.Control class="w-12 h-6 rounded-full bg-surface-400 relative">
+              <Switch.Thumb class="absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform" />
+            </Switch.Control>
+          </Switch>
+        </div>
       </div>
-    </div>
-
-    <div class="flex items-center justify-between">
-      <p>Slide Toggle:</p>
-      <button
-        role="switch"
-        aria-label="Slide toggle"
-        aria-checked={toggleValue}
-        onclick={() => (toggleValue = !toggleValue)}
-        class="w-12 h-6 rounded-full transition-colors duration-200 {toggleValue
-          ? 'bg-success-500'
-          : 'bg-surface-400'} relative"
-      >
-        <span
-          class="absolute top-1 left-1 w-4 h-4 rounded-full bg-white transition-transform duration-200 {toggleValue
-            ? 'translate-x-6'
-            : ''}"
-        ></span>
-      </button>
     </div>
   </section>
 
-  <!-- Tabs -->
+  <!-- Slider & Segmented Control -->
+  <section class="card p-4 space-y-6 shadow-xl">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="space-y-4">
+        <h3 class="h3 font-bold">Slider</h3>
+        <Slider
+          value={sliderValue}
+          onValueChange={(e) => (sliderValue = e.value)}
+          min={0}
+          max={100}
+          step={1}
+        >
+          <Slider.Label class="mb-4 block">Volume: {sliderValue[0]}%</Slider.Label>
+          <Slider.Control class="flex items-center">
+            <Slider.Track class="h-2 flex-1 rounded-full bg-surface-200-800 overflow-hidden">
+              <Slider.Range class="bg-primary-500 h-full" />
+            </Slider.Track>
+            <Slider.Thumb index={0} class="size-6 bg-surface-100-900 border-2 border-primary-500 rounded-full shadow-xl -ml-3" />
+          </Slider.Control>
+        </Slider>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="h3 font-bold">Segmented Control</h3>
+        <SegmentedControl
+          value={segmentedValue}
+          onValueChange={(e) => (segmentedValue = e.value)}
+          class="flex bg-surface-200-800 p-1 rounded-3xl"
+        >
+          <SegmentedControl.Item
+            value="email"
+            class="flex-1"
+          >
+            <SegmentedControl.ItemText class="flex items-center justify-center p-2 rounded-2xl transition-colors {segmentedValue === 'email' ? 'bg-surface-100-900 shadow font-bold' : 'opacity-50'}">
+              <MailIcon class="size-4 mr-2" /> Email
+            </SegmentedControl.ItemText>
+          </SegmentedControl.Item>
+          <SegmentedControl.Item
+            value="settings"
+            class="flex-1"
+          >
+            <SegmentedControl.ItemText class="flex items-center justify-center p-2 rounded-2xl transition-colors {segmentedValue === 'settings' ? 'bg-surface-100-900 shadow font-bold' : 'opacity-50'}">
+              <SettingsIcon class="size-4 mr-2" /> Settings
+            </SegmentedControl.ItemText>
+          </SegmentedControl.Item>
+          <SegmentedControl.Item
+            value="profile"
+            class="flex-1"
+          >
+            <SegmentedControl.ItemText class="flex items-center justify-center p-2 rounded-2xl transition-colors {segmentedValue === 'profile' ? 'bg-surface-100-900 shadow font-bold' : 'opacity-50'}">
+              <UserIcon class="size-4 mr-2" /> Profile
+            </SegmentedControl.ItemText>
+          </SegmentedControl.Item>
+        </SegmentedControl>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rating Group -->
+  <section class="card p-4 space-y-4 shadow-xl">
+    <h3 class="h3 font-bold">Rating Group</h3>
+    <div class="flex items-center gap-4">
+      <RatingGroup
+        value={ratingValue}
+        count={5}
+        onValueChange={(e) => (ratingValue = e.value)}
+      >
+        <RatingGroup.Control class="flex gap-1">
+          {#each Array.from({ length: 5 }) as _, i}
+            <RatingGroup.Item index={i + 1}>
+              {#snippet full()}<StarIcon class="size-8 fill-current text-warning-500" />{/snippet}
+              {#snippet empty()}<StarIcon class="size-8 text-surface-400" />{/snippet}
+            </RatingGroup.Item>
+          {/each}
+        </RatingGroup.Control>
+      </RatingGroup>
+      <span class="text-xl font-bold">{ratingValue} / 5</span>
+    </div>
+  </section>
+
+  <!-- Tabs (Custom CSS based) -->
   <section class="card p-4 shadow-xl">
+    <h3 class="h3 font-bold mb-4">Tabs</h3>
     <div class="flex gap-2 border-b border-surface-300-700 mb-4">
       {#each [["Home", 0], ["About", 1], ["Contact", 2]] as [label, idx]}
         <button
@@ -117,9 +258,9 @@
     {/if}
   </section>
 
-  <!-- ✅ Accordion (Skeleton v3 component) -->
+  <!-- Accordion (Skeleton v3 component) -->
   <section class="card p-4 shadow-xl space-y-2">
-    <h3 class="h3 mb-4">Accordion (FAQ)</h3>
+    <h3 class="h3 font-bold mb-4">Accordion (FAQ)</h3>
 
     <Accordion collapsible>
       {#each faqItems as item, i (item)}
